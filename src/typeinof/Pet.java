@@ -1,11 +1,12 @@
 package typeinof;
 
-public class Pet {
-	private String name;
+import containers.Individual;
+
+public class Pet extends Individual {
 	public Pet(String name) {
-		this.name = name;
+		super(name);
 	}
 	public Pet() {
-		
+		super();
 	}
 }
