@@ -222,6 +222,10 @@ public class ListPerformance {
 		ListTester.run(new LinkedList<>() , tests);
 		ListTester.run(new Vector<>(), tests);
 		
+		/*Tester.run(new ArrayList<>(), tests);
+		Tester.run(new LinkedList<>(), tests);
+		Tester.run(new Vector<>(), tests);
+		*/ 
 		Tester.fieldWidth = 12;
 		Tester<LinkedList<Integer>> qTester = new Tester<LinkedList<Integer>>(new LinkedList<Integer>()
 				, qTests);
