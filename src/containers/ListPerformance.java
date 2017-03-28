@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
+import java.util.Vector;
 
 import net.mindview.util.CountingGenerator;
 import net.mindview.util.CountingIntegerList;
@@ -15,7 +16,7 @@ public class ListPerformance {
 	static Random random = new Random();
 	static int reps = 1000;
 	static List<Test<List<Integer>>> tests = new ArrayList<>();
-	static List<Test<LinkedList<Integer>>> pTests = new ArrayList<>();
+	static List<Test<LinkedList<Integer>>> qTests = new ArrayList<>();
 	static {
 		tests.add(new Test<List<Integer>>("add") {
 			@Override
@@ -108,6 +109,79 @@ public class ListPerformance {
 				return loops * size;
 			}
 		});
+		
+		qTests.add(new Test<LinkedList<Integer>>("addFirst") {
+			
+			@Override
+			int test(LinkedList<Integer> container, TestParam tp) {
+				// TODO Auto-generated method stub
+				int loops = tp.loops;
+				int size = tp.size;
+				for (int i = 0; i < loops; i++) {
+					container.clear();
+					for (int j = 0; j < size; j++) {
+						container.addFirst(47);
+					}
+				}
+				return loops * size;
+			}
+		});
+		
+		qTests.add(new Test<LinkedList<Integer>>("addLast") {
+			
+			@Override
+			int test(LinkedList<Integer> container, TestParam tp) {
+				// TODO Auto-generated method stub
+				int loops = tp.loops;
+				int size = tp.size;
+				for (int i = 0; i < loops; i++) {
+					container.clear();
+					for (int j = 0; j < size; j++) {
+						container.addLast(49);
+					}
+				}
+				return loops * size;
+			}
+		});
+		
+		qTests.add(new Test<LinkedList<Integer>>("rmFirst") {
+			
+			@Override
+			int test(LinkedList<Integer> container, TestParam tp) {
+				// TODO Auto-generated method stub
+				int loops = tp.loops;
+				int size = tp.size;
+				for (int i = 0; i < loops; i++) {
+					container.clear();
+					container.addAll(new CountingIntegerList(size));
+					while (container.size() > 0) {
+						container.removeFirst();
+					}
+				}
+				return loops * size;
+			}
+		});
+		
+		
+		qTests.add(new Test<LinkedList<Integer>>("rmLast") {
+			
+			@Override
+			int test(LinkedList<Integer> container, TestParam tp) {
+				// TODO Auto-generated method stub
+				int loops = tp.loops;
+				int size = tp.size;
+				for (int i = 0; i < loops; i++) {
+					container.clear();
+					container.addAll(new CountingIntegerList(size));
+					while (container.size() > 0) {
+						container.removeLast();
+					}
+				}
+				return loops * size;
+			}
+		});
+		
+		
 	}
 	
 	static class ListTester extends Tester<List<Integer>> {
@@ -120,6 +194,10 @@ public class ListPerformance {
 			container.addAll(new CountingIntegerList(size));
 			return container;
 		}
+		
+		public static void run(List<Integer> list, List<Test<List<Integer>>> tests) {
+			new ListTester(list, tests).timedTest();
+		}
 	}
 	
 	public static void main(String[] args) {
@@ -127,7 +205,7 @@ public class ListPerformance {
 			Tester.defaultParams = TestParam.array(args);
 		}
 		
-		Tester<List<Integer>> arrayTest = new Tester<List<Integer>>(null, tests.subList(1, 2)) {
+		Tester<List<Integer>> arrayTest = new Tester<List<Integer>>(null, tests.subList(1, 3)) {
 			protected List<Integer> initialize(int size) {
 				Integer[] ia = Generated.array(Integer.class, new CountingGenerator.Integer(), size);
 				return Arrays.asList(ia);
@@ -141,6 +219,13 @@ public class ListPerformance {
 			Tester.defaultParams = TestParam.array(args);
 		}
 		ListTester.run(new ArrayList<>(), tests);
-
+		ListTester.run(new LinkedList<>() , tests);
+		ListTester.run(new Vector<>(), tests);
+		
+		Tester.fieldWidth = 12;
+		Tester<LinkedList<Integer>> qTester = new Tester<LinkedList<Integer>>(new LinkedList<Integer>()
+				, qTests);
+		qTester.setheadLine("Queue tests");
+		qTester.timedTest();
 	}
 }
