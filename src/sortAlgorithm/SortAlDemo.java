@@ -12,37 +12,6 @@ import com.sun.corba.se.impl.orbutil.closure.Future;
 
 public class SortAlDemo {
 	
-	static class qsort implements Callable<Integer> {
-		private ArrayList<Integer> list;
-		private int start, end;
-		public qsort(ArrayList<Integer> list, int start, int end) {
-			this.list = list;
-			this.start = start;
-			this.end = end;
-		}
-		
-		@Override
-		public Integer call() throws Exception {
-			// TODO 自动生成的方法存根
-			int key = list.get(end);
-			int indexOfLow = start - 1;
-			int temp;
-			for (int i = start; i < end; i++) {
-				if (list.get(i) <= key) {
-					indexOfLow++;
-					temp = list.get(indexOfLow);
-					list.set(indexOfLow, list.get(i));
-					list.set(i, temp);
-				}
-			}
-			temp = list.get(indexOfLow + 1);
-			list.set(indexOfLow + 1, key);
-			list.set(end, temp);
-			return indexOfLow + 1;
-		}
-		
-	}
-	
 	//冒泡排序
 	public static void bubbleSort(ArrayList<Integer> list) {
 		int high = list.size() - 1;
@@ -117,7 +86,7 @@ public class SortAlDemo {
 			}
 		}
 	}
-	
+
 	public static void mergeSort(ArrayList<Integer> list, int start, int end) {
 		if (start < end) {
 			int mid = (int) (start + end) / 2;
@@ -146,12 +115,11 @@ public class SortAlDemo {
 		return indexOfLow + 1;
 	}
 	
-	public static void quickSort(ExecutorService executorService, ArrayList<Integer> list, int start, int end) throws InterruptedException, ExecutionException {
+	public static void quickSort(ArrayList<Integer> list, int start, int end) {
 		if (start < end) {
-			FutureTask<Integer> futureTask = (FutureTask<Integer>) executorService.submit(new qsort(list, start, end));
-			int index = futureTask.get();
-			quickSort(executorService, list, start, index - 1);
-			quickSort(executorService, list, index + 1, end);
+			int index = partition(list, start, end);
+			quickSort(list, start, index - 1);
+			quickSort(list, index + 1, end);
 		}
 	}
 	
@@ -205,15 +173,14 @@ public class SortAlDemo {
 	}
 	
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
-		int N = Runtime.getRuntime().availableProcessors();
-		ExecutorService executorService = Executors.newFixedThreadPool(N);
+
 		Random random = new Random();
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < 50; i++) {
 			list.add(random.nextInt(20) - 10);
 		}
 		myPrint(list);
-		quickSort(executorService, list, 0, list.size() - 1);
+		quickSort(list, 0, list.size() - 1);
 		myPrint(list);
 	}
 
