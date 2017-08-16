@@ -17,6 +17,7 @@ public class ArrayMaker<T> {
 	public static void main(String[] args) {
 		ArrayMaker<String> stringMaker = new ArrayMaker<>(String.class);
 		String[] stringArray = stringMaker.create(9);
+		stringArray[0] = "exist";
 		System.out.println(Arrays.toString(stringArray));
 
 	}
